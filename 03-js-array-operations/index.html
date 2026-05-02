@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JS Array Operations</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef2f7;
+      padding: 30px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 15px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+
+    .btn-group {
+      margin-top: 15px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      color: white;
+    }
+
+    .btn-reverse  { background-color: #e74c3c; }
+    .btn-sort-asc { background-color: #2ecc71; }
+    .btn-sort-desc{ background-color: #27ae60; }
+    .btn-linear   { background-color: #3498db; }
+    .btn-binary   { background-color: #2980b9; }
+    .btn-reset    { background-color: #95a5a6; }
+
+    .result-box {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f0f4ff;
+      border-left: 4px solid #3498db;
+      border-radius: 5px;
+      min-height: 50px;
+    }
+
+    .result-box p {
+      margin: 5px 0;
+    }
+
+    .highlight {
+      color: #e74c3c;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>JavaScript Array Operations</h2>
+
+  <div class="container">
+
+    <label>Enter array elements (comma separated):</label>
+    <input type="text" id="arrayInput" placeholder="e.g. 5, 3, 8, 1, 9, 2"/>
+
+    <label>Search for element (for Linear/Binary Search):</label>
+    <input type="text" id="searchInput" placeholder="e.g. 8"/>
+
+    <div class="btn-group">
+      <button class="btn-reverse"  onclick="reverseArray()">Reverse</button>
+      <button class="btn-sort-asc" onclick="sortArray('asc')">Sort Ascending</button>
+      <button class="btn-sort-desc" onclick="sortArray('desc')">Sort Descending</button>
+      <button class="btn-linear"   onclick="linearSearch()">Linear Search</button>
+      <button class="btn-binary"   onclick="binarySearch()">Binary Search</button>
+      <button class="btn-reset"    onclick="resetAll()">Reset</button>
+    </div>
+
+    <div class="result-box" id="resultBox">
+      <p>Results will appear here...</p>
+    </div>
+
+  </div>
+
+  <script>
+    // Helper: get array from input
+    function getArray() {
+      var input = document.getElementById('arrayInput').value;
+      if (input.trim() === '') {
+        showResult('Please enter some array elements first.');
+        return null;
+      }
+      // Split by comma, convert to numbers
+      var arr = input.split(',').map(function(item) {
+        return parseFloat(item.trim());
+      });
+      // Check for invalid numbers
+      for (var i = 0; i < arr.length; i++) {
+        if (isNaN(arr[i])) {
+          showResult('Invalid input! Please enter numbers only, separated by commas.');
+          return null;
+        }
+      }
+      return arr;
+    }
+
+    // Show result in the result box
+    function showResult(html) {
+      document.getElementById('resultBox').innerHTML = html;
+    }
+
+    // 1. Reverse the array
+    function reverseArray() {
+      var arr = getArray();
+      if (!arr) return;
+
+      var original = arr.slice(); // copy
+      arr.reverse();
+
+      showResult(
+        '<p><strong>Original Array:</strong> [' + original.join(', ') + ']</p>' +
+        '<p><strong>Reversed Array:</strong> [' + arr.join(', ') + ']</p>'
+      );
+    }
+
+    // 2. Sort array
+    function sortArray(order) {
+      var arr = getArray();
+      if (!arr) return;
+
+      var original = arr.slice();
+
+      if (order === 'asc') {
+        arr.sort(function(a, b) { return a - b; });
+      } else {
+        arr.sort(function(a, b) { return b - a; });
+      }
+
+      var label = order === 'asc' ? 'Ascending' : 'Descending';
+      showResult(
+        '<p><strong>Original Array:</strong> [' + original.join(', ') + ']</p>' +
+        '<p><strong>Sorted (' + label + '):</strong> [' + arr.join(', ') + ']</p>'
+      );
+    }
+
+    // 3. Linear Search
+    function linearSearch() {
+      var arr = getArray();
+      if (!arr) return;
+
+      var target = parseFloat(document.getElementById('searchInput').value);
+      if (isNaN(target)) {
+        showResult('Please enter a valid number to search.');
+        return;
+      }
+
+      var foundIndex = -1;
+      for (var i = 0; i < arr.length; i++) {
+        if (arr[i] === target) {
+          foundIndex = i;
+          break;
+        }
+      }
+
+      var resultHTML = '<p><strong>Array:</strong> [' + arr.join(', ') + ']</p>';
+      resultHTML += '<p><strong>Searching for:</strong> ' + target + '</p>';
+
+      if (foundIndex !== -1) {
+        resultHTML += '<p class="highlight">✅ Found at index ' + foundIndex + ' (position ' + (foundIndex + 1) + ')</p>';
+      } else {
+        resultHTML += '<p class="highlight">❌ Element not found in the array.</p>';
+      }
+
+      showResult(resultHTML);
+    }
+
+    // 4. Binary Search (array must be sorted first)
+    function binarySearch() {
+      var arr = getArray();
+      if (!arr) return;
+
+      var target = parseFloat(document.getElementById('searchInput').value);
+      if (isNaN(target)) {
+        showResult('Please enter a valid number to search.');
+        return;
+      }
+
+      // Sort the array first for binary search
+      var sorted = arr.slice().sort(function(a, b) { return a - b; });
+
+      var low = 0;
+      var high = sorted.length - 1;
+      var foundIndex = -1;
+      var steps = [];
+
+      while (low <= high) {
+        var mid = Math.floor((low + high) / 2);
+        steps.push('Checking index ' + mid + ' → value: ' + sorted[mid]);
+
+        if (sorted[mid] === target) {
+          foundIndex = mid;
+          break;
+        } else if (sorted[mid] < target) {
+          low = mid + 1;
+        } else {
+          high = mid - 1;
+        }
+      }
+
+      var resultHTML = '<p><strong>Sorted Array (for Binary Search):</strong> [' + sorted.join(', ') + ']</p>';
+      resultHTML += '<p><strong>Searching for:</strong> ' + target + '</p>';
+      resultHTML += '<p><strong>Steps:</strong> ' + steps.join(' → ') + '</p>';
+
+      if (foundIndex !== -1) {
+        resultHTML += '<p class="highlight">✅ Found at index ' + foundIndex + ' in sorted array</p>';
+      } else {
+        resultHTML += '<p class="highlight">❌ Element not found.</p>';
+      }
+
+      showResult(resultHTML);
+    }
+
+    // Reset
+    function resetAll() {
+      document.getElementById('arrayInput').value = '';
+      document.getElementById('searchInput').value = '';
+      showResult('<p>Results will appear here...</p>');
+    }
+  </script>
+
+</body>
+</html>

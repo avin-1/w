@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Traffic Signal</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; background: #1a1a2e;
+           display: flex; flex-direction: column; align-items: center;
+           justify-content: center; min-height: 100vh; padding: 20px; }
+
+    h3 { color: #e2e8f0; margin-bottom: 24px; font-size: 22px; letter-spacing: 1px; }
+
+    .road { display: flex; align-items: flex-end; gap: 60px; }
+
+    /* Signal pole + box */
+    .signal-wrap { display: flex; flex-direction: column; align-items: center; }
+    .signal-box {
+      background: #1e293b;
+      border: 3px solid #334155;
+      border-radius: 16px;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+    .pole {
+      width: 10px; height: 80px;
+      background: #475569; border-radius: 0 0 4px 4px;
+    }
+    .base {
+      width: 60px; height: 12px;
+      background: #475569; border-radius: 4px;
+    }
+
+    /* LED lights */
+    .light {
+      width: 70px; height: 70px;
+      border-radius: 50%;
+      border: 3px solid #0f172a;
+      position: relative;
+      transition: box-shadow 0.3s ease;
+    }
+    /* Off state — dim colors */
+    .light.red-light    { background: #3d0000; }
+    .light.yellow-light { background: #2d2000; }
+    .light.green-light  { background: #002d00; }
+
+    /* On / glowing state */
+    .light.red-light.on {
+      background: #ef4444;
+      box-shadow: 0 0 20px 8px rgba(239,68,68,0.7), 0 0 40px 16px rgba(239,68,68,0.3);
+    }
+    .light.yellow-light.on {
+      background: #f59e0b;
+      box-shadow: 0 0 20px 8px rgba(245,158,11,0.7), 0 0 40px 16px rgba(245,158,11,0.3);
+    }
+    .light.green-light.on {
+      background: #22c55e;
+      box-shadow: 0 0 20px 8px rgba(34,197,94,0.7), 0 0 40px 16px rgba(34,197,94,0.3);
+    }
+
+    /* Road surface */
+    .road-surface {
+      width: 100%; max-width: 500px;
+      height: 60px; background: #374151;
+      border-radius: 4px; margin-top: 20px;
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+    }
+    .stripe { width: 40px; height: 8px; background: #f9fafb; border-radius: 2px; }
+
+    /* Info panel */
+    .info { margin-top: 28px; text-align: center; }
+    .signal-name {
+      font-size: 28px; font-weight: bold; letter-spacing: 2px;
+      margin-bottom: 6px;
+    }
+    .signal-name.red    { color: #ef4444; }
+    .signal-name.yellow { color: #f59e0b; }
+    .signal-name.green  { color: #22c55e; }
+
+    .timer { font-size: 48px; font-weight: bold; color: #e2e8f0; margin-bottom: 6px; }
+    .instruction { font-size: 14px; color: #94a3b8; margin-bottom: 20px; }
+
+    /* Controls */
+    .controls { display: flex; gap: 12px; }
+    .controls button {
+      padding: 9px 20px; border: none; border-radius: 6px;
+      cursor: pointer; font-size: 14px; font-weight: bold; color: white;
+    }
+    #btnAuto   { background: #3b82f6; }
+    #btnManual { background: #6b7280; }
+    .manual-btns { display: flex; gap: 10px; margin-top: 12px; }
+    .manual-btns button { padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; color: white; font-size: 13px; }
+    #mRed    { background: #ef4444; }
+    #mYellow { background: #f59e0b; }
+    #mGreen  { background: #22c55e; }
+  </style>
+</head>
+<body>
+
+  <h3>🚦 Traffic Signal</h3>
+
+  <div class="road">
+    <div class="signal-wrap">
+      <div class="signal-box">
+        <div class="light red-light"    id="red"></div>
+        <div class="light yellow-light" id="yellow"></div>
+        <div class="light green-light"  id="green"></div>
+      </div>
+      <div class="pole"></div>
+      <div class="base"></div>
+    </div>
+  </div>
+
+  <div class="road-surface">
+    <div class="stripe"></div><div class="stripe"></div>
+    <div class="stripe"></div><div class="stripe"></div>
+    <div class="stripe"></div>
+  </div>
+
+  <div class="info">
+    <div class="signal-name" id="signalName">RED</div>
+    <div class="timer" id="timer">10</div>
+    <div class="instruction" id="instruction">🛑 Stop</div>
+  </div>
+
+  <div class="controls">
+    <button id="btnAuto"   onclick="startAuto()">▶ Auto</button>
+    <button id="btnManual" onclick="toggleManual()">🖐 Manual</button>
+  </div>
+  <div class="manual-btns" id="manualBtns" style="display:none">
+    <button id="mRed"    onclick="setSignal('red')">🔴 Red</button>
+    <button id="mYellow" onclick="setSignal('yellow')">🟡 Yellow</button>
+    <button id="mGreen"  onclick="setSignal('green')">🟢 Green</button>
+  </div>
+
+<script>
+  const signals = [
+    { id: 'red',    name: 'RED',    duration: 10, msg: '🛑 Stop',           cls: 'red'    },
+    { id: 'yellow', name: 'YELLOW', duration: 3,  msg: '⚠️ Get Ready',      cls: 'yellow' },
+    { id: 'green',  name: 'GREEN',  duration: 8,  msg: '✅ Go',             cls: 'green'  },
+    { id: 'yellow', name: 'YELLOW', duration: 3,  msg: '⚠️ Slow Down',      cls: 'yellow' },
+  ];
+
+  let currentIndex = 0;
+  let timeLeft     = signals[0].duration;
+  let autoInterval = null;
+  let isManual     = false;
+
+  function setSignal(signalId) {
+    // Turn all off
+    ['red','yellow','green'].forEach(id => {
+      document.getElementById(id).classList.remove('on');
+    });
+    // Turn on selected
+    document.getElementById(signalId).classList.add('on');
+  }
+
+  function updateDisplay(sig, time) {
+    document.getElementById('signalName').textContent  = sig.name;
+    document.getElementById('signalName').className    = 'signal-name ' + sig.cls;
+    document.getElementById('timer').textContent       = time;
+    document.getElementById('instruction').textContent = sig.msg;
+    setSignal(sig.id);
+  }
+
+  function startAuto() {
+    isManual = false;
+    document.getElementById('manualBtns').style.display = 'none';
+    if (autoInterval) clearInterval(autoInterval);
+
+    currentIndex = 0;
+    timeLeft     = signals[0].duration;
+    updateDisplay(signals[0], timeLeft);
+
+    autoInterval = setInterval(() => {
+      timeLeft--;
+      document.getElementById('timer').textContent = timeLeft;
+
+      if (timeLeft <= 0) {
+        currentIndex = (currentIndex + 1) % signals.length;
+        timeLeft     = signals[currentIndex].duration;
+        updateDisplay(signals[currentIndex], timeLeft);
+      }
+    }, 1000);
+  }
+
+  function toggleManual() {
+    isManual = !isManual;
+    if (isManual) {
+      if (autoInterval) clearInterval(autoInterval);
+      document.getElementById('manualBtns').style.display = 'flex';
+      document.getElementById('timer').textContent = '--';
+    } else {
+      document.getElementById('manualBtns').style.display = 'none';
+      startAuto();
+    }
+  }
+
+  // Start automatically on load
+  startAuto();
+</script>
+</body>
+</html>

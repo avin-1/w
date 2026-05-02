@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Registration Form</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f0f2f5; padding: 30px; }
+    .form-box {
+      max-width: 450px; margin: 0 auto;
+      background: white; padding: 30px;
+      border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h2 { text-align: center; color: #333; }
+    label { display: block; margin-top: 12px; font-weight: bold; }
+    input[type="text"], input[type="email"], input[type="password"] {
+      width: 100%; padding: 8px; margin-top: 5px;
+      border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;
+    }
+    .radio-group { margin-top: 10px; }
+    .radio-group label { display: inline; font-weight: normal; margin-left: 5px; }
+    button {
+      width: 100%; padding: 10px; margin-top: 20px;
+      background: #3498db; color: white;
+      border: none; border-radius: 5px; cursor: pointer; font-size: 15px;
+    }
+    button:hover { background: #2980b9; }
+    .error { color: red; font-size: 13px; margin-top: 4px; }
+  </style>
+</head>
+<body>
+
+  <div class="form-box">
+    <h2>Register</h2>
+
+    <form action="process.php" method="POST" onsubmit="return validateForm()">
+
+      <label>Name:</label>
+      <input type="text" id="name" name="name" placeholder="Enter your name"/>
+      <div class="error" id="nameError"></div>
+
+      <label>Email:</label>
+      <input type="email" id="email" name="email" placeholder="Enter your email"/>
+      <div class="error" id="emailError"></div>
+
+      <label>Password:</label>
+      <input type="password" id="password" name="password" placeholder="Enter password"/>
+      <div class="error" id="passwordError"></div>
+
+      <label>Submit Method:</label>
+      <div class="radio-group">
+        <input type="radio" name="method" value="POST" checked/>
+        <label>POST</label>
+        &nbsp;&nbsp;
+        <input type="radio" name="method" value="GET" onclick="this.form.method='get'"/>
+        <label>GET</label>
+      </div>
+
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+
+  <script>
+    function validateForm() {
+      var valid = true;
+
+      // Clear previous errors
+      document.getElementById('nameError').innerText = '';
+      document.getElementById('emailError').innerText = '';
+      document.getElementById('passwordError').innerText = '';
+
+      var name = document.getElementById('name').value.trim();
+      var email = document.getElementById('email').value.trim();
+      var password = document.getElementById('password').value.trim();
+
+      if (name === '') {
+        document.getElementById('nameError').innerText = 'Name is required.';
+        valid = false;
+      }
+
+      // Email format validation using regex
+      var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (email === '') {
+        document.getElementById('emailError').innerText = 'Email is required.';
+        valid = false;
+      } else if (!emailRegex.test(email)) {
+        document.getElementById('emailError').innerText = 'Invalid email format.';
+        valid = false;
+      }
+
+      if (password === '') {
+        document.getElementById('passwordError').innerText = 'Password is required.';
+        valid = false;
+      } else if (password.length < 6) {
+        document.getElementById('passwordError').innerText = 'Password must be at least 6 characters.';
+        valid = false;
+      }
+
+      return valid;
+    }
+  </script>
+
+</body>
+</html>

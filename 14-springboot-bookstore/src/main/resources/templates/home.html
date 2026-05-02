@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>BookStore — Home</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; background: #f0f4f8; }
+    nav { background: #1e293b; color: white; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; }
+    nav a { color: white; text-decoration: none; font-size: 14px; margin-left: 10px; padding: 6px 12px; border: 1px solid #fff; border-radius: 4px; }
+    nav .brand { font-size: 18px; font-weight: bold; border: none; padding: 0; }
+    .container { max-width: 900px; margin: 40px auto; padding: 0 16px; text-align: center; }
+    h1 { color: #333; margin-bottom: 10px; }
+    p.lead { color: #666; margin-bottom: 24px; }
+    .btn-main { display: inline-block; padding: 12px 28px; background: #3b82f6; color: white; border-radius: 6px; text-decoration: none; font-size: 16px; }
+    .cards { display: flex; gap: 16px; margin-top: 40px; }
+    .feature { flex: 1; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+    .feature h5 { margin-bottom: 8px; color: #333; }
+    .feature p { font-size: 14px; color: #666; }
+  </style>
+</head>
+<body>
+<nav>
+  <a class="brand" href="/">📚 BookStore</a>
+  <div>
+    <a href="/catalog">Catalog</a>
+    <a href="/login">Login</a>
+    <a href="/register">Register</a>
+  </div>
+</nav>
+<div class="container">
+  <h1>Welcome to VIT BookStore</h1>
+  <p class="lead">Browse our collection of books across all categories.</p>
+  <a href="/catalog" class="btn-main">Browse Catalog</a>
+  <div class="cards">
+    <div class="feature"><h5>📖 Wide Selection</h5><p>Thousands of books across Engineering, Science, Arts and more.</p></div>
+    <div class="feature"><h5>💰 Best Prices</h5><p>Competitive prices with student discounts available.</p></div>
+    <div class="feature"><h5>🚚 Fast Delivery</h5><p>Get your books delivered to your hostel within 2 days.</p></div>
+  </div>
+</div>
+</body>
+</html>

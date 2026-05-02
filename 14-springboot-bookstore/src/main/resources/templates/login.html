@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Login</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; background: #f0f4f8; display: flex; justify-content: center; padding: 60px 16px; }
+    .card { background: white; padding: 28px; border-radius: 10px; width: 100%; max-width: 400px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    h3 { margin-bottom: 16px; color: #333; }
+    .error { background: #fee2e2; color: #991b1b; padding: 10px; border-radius: 5px; margin-bottom: 14px; font-size: 14px; }
+    label { display: block; font-weight: bold; margin-bottom: 4px; margin-top: 12px; }
+    input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
+    button { width: 100%; padding: 10px; margin-top: 16px; background: #3b82f6; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 15px; }
+    p { margin-top: 14px; text-align: center; font-size: 14px; }
+    a { color: #3b82f6; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <h3>🔐 Login</h3>
+  <div class="error" th:if="${error}" th:text="${error}"></div>
+  <form method="POST" action="/login">
+    <label>Username</label>
+    <input type="text" name="username" required/>
+    <label>Password</label>
+    <input type="password" name="password" required/>
+    <button>Login</button>
+  </form>
+  <p>No account? <a href="/register">Register</a></p>
+</div>
+</body>
+</html>

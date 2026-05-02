@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Style Switcher</title>
+  <style>
+    /* Base reset */
+    * { box-sizing: border-box; margin: 0; padding: 0; transition: all 0.3s ease; }
+    body { font-family: Arial, sans-serif; padding: 30px; min-height: 100vh; }
+
+    /* ── Theme 1: Light (default) ── */
+    body.theme-light {
+      background: #f0f4f8; color: #333;
+    }
+    body.theme-light .card   { background: white; border: 1px solid #e2e8f0; }
+    body.theme-light input, body.theme-light select, body.theme-light textarea {
+      background: white; border: 1px solid #ccc; color: #333;
+    }
+    body.theme-light .nav    { background: #1e293b; color: white; }
+    body.theme-light .nav a  { color: #94a3b8; }
+
+    /* ── Theme 2: Dark ── */
+    body.theme-dark {
+      background: #0f172a; color: #e2e8f0;
+    }
+    body.theme-dark .card    { background: #1e293b; border: 1px solid #334155; }
+    body.theme-dark input, body.theme-dark select, body.theme-dark textarea {
+      background: #334155; border: 1px solid #475569; color: #e2e8f0;
+    }
+    body.theme-dark .nav     { background: #020617; color: white; }
+    body.theme-dark .nav a   { color: #64748b; }
+
+    /* ── Theme 3: Colorful ── */
+    body.theme-colorful {
+      background: linear-gradient(135deg, #fdf4ff, #eff6ff); color: #1e1b4b;
+    }
+    body.theme-colorful .card   { background: white; border: 2px solid #a78bfa; }
+    body.theme-colorful input, body.theme-colorful select, body.theme-colorful textarea {
+      background: #faf5ff; border: 1px solid #c4b5fd; color: #1e1b4b;
+    }
+    body.theme-colorful .nav    { background: #7c3aed; color: white; }
+    body.theme-colorful .nav a  { color: #ddd6fe; }
+    body.theme-colorful h1, body.theme-colorful h3 { color: #7c3aed; }
+    body.theme-colorful .btn-active { background: #7c3aed !important; }
+
+    /* Layout */
+    .nav { padding: 14px 24px; border-radius: 8px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+    .nav span { font-weight: bold; font-size: 16px; }
+    .nav a    { text-decoration: none; margin-left: 16px; font-size: 14px; }
+
+    .theme-btns { display: flex; gap: 10px; margin-bottom: 24px; }
+    .theme-btns button {
+      padding: 9px 20px; border: none; border-radius: 6px;
+      cursor: pointer; font-size: 14px; font-weight: bold; color: white;
+    }
+    #btn-light    { background: #64748b; }
+    #btn-dark     { background: #1e293b; }
+    #btn-colorful { background: #7c3aed; }
+    .btn-active   { outline: 3px solid #f59e0b; outline-offset: 2px; }
+
+    .card { padding: 20px; border-radius: 10px; margin-bottom: 16px; }
+    .card h3 { margin-bottom: 10px; }
+    .card p  { font-size: 14px; line-height: 1.6; }
+
+    .form-demo { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+    .form-demo input, .form-demo select, .form-demo textarea {
+      padding: 8px; border-radius: 4px; font-size: 14px; font-family: Arial, sans-serif; width: 100%;
+    }
+    .form-demo button {
+      padding: 9px; border: none; border-radius: 4px;
+      background: #3b82f6; color: white; cursor: pointer; font-size: 14px;
+    }
+  </style>
+</head>
+<body class="theme-light">
+
+  <nav class="nav">
+    <span>🎨 Style Switcher Demo</span>
+    <div>
+      <a href="#">Home</a>
+      <a href="#">About</a>
+      <a href="#">Contact</a>
+    </div>
+  </nav>
+
+  <div class="theme-btns">
+    <button id="btn-light"    onclick="setTheme('light')">☀️ Light</button>
+    <button id="btn-dark"     onclick="setTheme('dark')">🌙 Dark</button>
+    <button id="btn-colorful" onclick="setTheme('colorful')">🌈 Colorful</button>
+  </div>
+
+  <div class="card">
+    <h3>About This Page</h3>
+    <p>This page demonstrates jQuery-based style switching. Click any of the three buttons above to apply a completely different theme to all elements on the page — including the navbar, cards, form inputs, and background.</p>
+  </div>
+
+  <div class="card">
+    <h3>Sample Form</h3>
+    <div class="form-demo">
+      <input type="text" placeholder="Enter your name"/>
+      <select>
+        <option>Select a course</option>
+        <option>B.Tech CSE</option>
+        <option>B.Tech IT</option>
+        <option>MCA</option>
+      </select>
+      <textarea rows="2" placeholder="Write something..."></textarea>
+      <button>Submit</button>
+    </div>
+  </div>
+
+  <!-- jQuery via CDN (required by problem statement) -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    function setTheme(theme) {
+      // Remove all theme classes and apply selected one
+      $('body').removeClass('theme-light theme-dark theme-colorful')
+               .addClass('theme-' + theme);
+
+      // Highlight active button
+      $('.theme-btns button').removeClass('btn-active');
+      $('#btn-' + theme).addClass('btn-active');
+    }
+
+    // Set default active button on load
+    $(document).ready(function() {
+      $('#btn-light').addClass('btn-active');
+    });
+  </script>
+</body>
+</html>
